@@ -14,13 +14,13 @@
           </ul>
         </div>
       </div>
-    </nav>
+    </nav>  
   </div>
 </template>
 <script>
 export default {
     name: "navigation-view",    
-    data () {
+    data: ()=> {
       return {
         title: "",
         items: {},
