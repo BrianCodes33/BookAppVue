@@ -4,10 +4,11 @@ import Main from "@/components/Main";
 import Register from "@/components/Register";
 import Profile from "@/components/Profile";
 import Login from "@/components/Login";
+import firebase from "firebase";
 
 Vue.use(Router);
 
-export default new Router({
+let router = new Router({
   routes: [
     {
       path: "/",
@@ -22,7 +23,10 @@ export default new Router({
     {
       path: "/profile",
       name: "Profile",
-      component: Profile
+      component: Profile,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/login",
@@ -31,3 +35,14 @@ export default new Router({
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  let currentUser = firebase.auth().currentUser;
+  let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  if (requiresAuth && !currentUser) next("login");
+  else if (!requiresAuth && currentUser) next("profile");
+  else next();
+});
+
+export default router;

@@ -11,6 +11,7 @@ Vue.use(VueResource);
 
 Vue.config.productionTip = false;
 
+let app;
 var config = {
   apiKey: "AIzaSyBhZPM23j7e-g3pqqrdnWSwry3zbzi4B5M",
   authDomain: "book-trader-96e8a.firebaseapp.com",
@@ -23,9 +24,13 @@ var config = {
 firebase.initializeApp(config);
 
 /* eslint-disable no-new */
-new Vue({
-  el: "#app",
-  router,
-  components: { App, Nav },
-  template: "<App/>"
+firebase.auth().onAuthStateChanged(function(user) {
+  if (!app) {
+    app = new Vue({
+      el: "#app",
+      router,
+      components: { App, Nav },
+      template: "<App/>"
+    });
+  }
 });
