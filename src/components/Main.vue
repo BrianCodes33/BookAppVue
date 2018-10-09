@@ -8,8 +8,8 @@
           <a href="#" data-target="mobile-nav" class="sidenav-trigger">
             <i class="material-icons">menu</i>
           </a>
-          <ul class="right hide-on-med-and-down">
-            <li><a class="modal-trigger" href="#modal1">Login</a></li>
+          <ul class="right">
+            <li><router-link to="/login">Login</router-link></li>
             <li><router-link to="/register">Register</router-link></li>
             <li><router-link to="/profile">Profile</router-link></li>
           </ul>

@@ -10,7 +10,7 @@
             </a>
             <ul class="right hide-on-med-and-down">
               <li>
-                <a href="index.html" id="">Home</a>
+                <a href="/#" id="">Home</a>
               </li>
               <li>
                 <a href="#popular" id="">Popular</a>
@@ -32,7 +32,7 @@
 
     <div class="container">
       <div class="row">
-        <form @submit="checkForm" action="/#" method="post" novalidate="true">
+        <form novalidate="true">
           <p v-if="errors.length">
             <b>Please correct the following error(s):</b>
             <ul>
@@ -42,28 +42,23 @@
 
           <div class="col s8 offset-s2">
             <h3 class="text-center">Register</h3>
-            <hr> &nbsp;
             <p>* Please fill all required fields</p>
           </div>
           <div class="input-field col s8 offset-s2">
             <i class="material-icons prefix">email</i>
-            <input v-model="credentials.email" type="text" class="autocomplete">
-            <label for="autocomplete-input">Email</label>
-          </div>
-          <div class="input-field col s8 offset-s2">
-            <i class="material-icons prefix">vpn_key</i>
-            <input v-model="credentials.password" type="password" class="autocomplete">
-            <label for="autocomplete-input">Password</label>
+            <input v-model="credentials.email" type="text" class="autocomplete" placeholder="Email">
           </div>
           <div class="input-field col s8 offset-s2">
             <i class="material-icons prefix">account_circle</i>
-            <input v-model="credentials.username" type="text" class="autocomplete">
-            <label for="autocomplete-input">Username</label>
+            <input v-model="credentials.username" type="text" class="autocomplete" placeholder="Username">
+          </div>
+          <div class="input-field col s8 offset-s2">
+            <i class="material-icons prefix">vpn_key</i>
+            <input v-model="credentials.password" type="password" class="autocomplete" placeholder="Password">
           </div>
           <div class="input-field col s8 offset-s2">
             <i class="material-icons prefix">location_city</i>
-            <input v-model="credentials.city" type="text" class="autocomplete">
-            <label for="autocomplete-input">City and Country</label>
+            <input v-model="credentials.city" type="text" class="autocomplete" placeholder="Location">
           </div>
           <div class="input-field col s8 offset-s2">
             <label>
@@ -81,8 +76,7 @@
           <div class="row"></div>
           <br>
           <div class="input-field col s8 offset-s2">
-          <input type="submit" value="Submit">  
-            <a @click="submit()" class="waves-effect waves-light btn">button</a>
+            <input @click="submit" type="submit" value="Submit" class="waves-effect waves-light btn">  
           </div>
         </form>
       </div>
@@ -91,6 +85,7 @@
 </template>
 
 <script>
+import firebase from "firebase";
   export default {
     data() {
       return {
@@ -104,23 +99,32 @@
       }
     },
     methods: {
-      submit() {
+      submit(e) {
+        e.preventDefault()
+        firebase.auth().createUserWithEmailAndPassword(this.credentials.email, this.credentials.username)
+        .then((user) => {
+          console.log(user)
+          alert('account created')
+        }, (err) => {
+          console.log(err)
+        })
         let credentials = {
           email: this.credentials.email,
           password: this.credentials.password,
           username: this.credentials.username,
           city: this.credentials.city
         }
+        console.log(credentials)
       },
       checkForm: function (e) {
-          console.log('checking form');
+        console.log('checking form');
         if(this.credentials.email && this.credentials.password && this.credentials.username) return true;
         if (!this.credentials.email) this.errors.push("Email required.");
         if (!this.credentials.username) this.errors.push("User name required.");
         if (!this.credentials.password) {
           this.errors.push("Password required.");
         } else if (this.password.length < 6) {
-          this.errors.push('Passwort mussen bin 6 or more chars')
+          this.errors.push('Passwort mussen bin 6+ chars')
         }
         console.log(this.errors);
         e.preventDefault();
