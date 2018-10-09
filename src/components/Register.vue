@@ -10,7 +10,7 @@
             </a>
             <ul class="right hide-on-med-and-down">
               <li>
-                <a href="index.html" id="">Home</a>
+                <a href="/#" id="">Home</a>
               </li>
               <li>
                 <a href="#popular" id="">Popular</a>
@@ -113,14 +113,14 @@
         }
       },
       checkForm: function (e) {
-          console.log('checking form');
+        console.log('checking form');
         if(this.credentials.email && this.credentials.password && this.credentials.username) return true;
         if (!this.credentials.email) this.errors.push("Email required.");
         if (!this.credentials.username) this.errors.push("User name required.");
         if (!this.credentials.password) {
           this.errors.push("Password required.");
         } else if (this.password.length < 6) {
-          this.errors.push('Passwort mussen bin 6 or more chars')
+          this.errors.push('Passwort mussen bin 6+ chars')
         }
         console.log(this.errors);
         e.preventDefault();

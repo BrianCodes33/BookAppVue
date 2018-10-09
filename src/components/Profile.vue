@@ -1,7 +1,7 @@
 <template>
 
 <div>
-    <nav></nav>
+    <Nav />
     Profile
 </div>
 </template>
