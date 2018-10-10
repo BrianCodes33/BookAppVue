@@ -1,14 +1,14 @@
 <template>
 
 <div>
-    <Nav />
+    <Nav/>
     Profile
     <button @click="logout">Logout</button>
 </div>
 </template>
 
 <script>
-  import Nav from './Nav.vue';
+  import Nav from './Nav';
   import firebase from 'firebase';
   
   export default {
