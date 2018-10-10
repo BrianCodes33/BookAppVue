@@ -1,5 +1,6 @@
 <template>
 <div>
+    <Nav/>
     <div class="container">
       <div class="row">
         <form novalidate="true">
@@ -27,10 +28,14 @@
   </template>
 
   <script>
+    import Nav from './Nav'
     import firebase from 'firebase'
     export default {
+      components: {
+        Nav
+      },
       name: 'login',
-      data() {
+      data() {        
         return {
           email: '',
           password: ''

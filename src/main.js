@@ -11,9 +11,10 @@ Vue.use(VueResource);
 
 Vue.config.productionTip = false;
 
+const firebaseApi = process.env.FIREBASE_KEY;
 let app;
 var config = {
-  apiKey: "AIzaSyBhZPM23j7e-g3pqqrdnWSwry3zbzi4B5M",
+  apiKey: 'AIzaSyBhZPM23j7e-g3pqqrdnWSwry3zbzi4B5M',
   authDomain: "book-trader-96e8a.firebaseapp.com",
   databaseURL: "https://book-trader-96e8a.firebaseio.com",
   projectId: "book-trader-96e8a",
