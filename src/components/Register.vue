@@ -1,88 +1,58 @@
+
+
 <template>
   <div>
     <div class="navbar-fixed">
-      <nav class="brown lighten-3">
-        <div class="container">
-          <div class="nav-wrapper">
-            <a href="#" class="brand-logo">Book Trader</a>
-            <a href="#" data-target="mobile-nav" class="sidenav-trigger">
-              <i class="material-icons">menu</i>
-            </a>
-            <ul class="right hide-on-med-and-down">
-              <li>
-                <a href="index.html" id="">Home</a>
-              </li>
-              <li>
-                <a href="#popular" id="">Popular</a>
-              </li>
-              <li>
-                <a href="#login" id="">Login</a>
-              </li>
-              <li>
-                <a href="#register" id="">Register</a>
-              </li>
-              <li>
-                <a href="#about" id="">About</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+       <Nav/>
     </div>
 
     <div class="container">
       <div class="row">
-        <form @submit="checkForm" action="/#" method="post" novalidate="true">
+        <form novalidate>
           <p v-if="errors.length">
             <b>Please correct the following error(s):</b>
             <ul>
-              <li v-for="error in errors">{{ error }}</li>
+              <li class="red-text text-darken-1" v-for="error in errors">**{{ error }}</li>
             </ul>
           </p>
 
           <div class="col s8 offset-s2">
             <h3 class="text-center">Register</h3>
-            <hr> &nbsp;
             <p>* Please fill all required fields</p>
           </div>
           <div class="input-field col s8 offset-s2">
             <i class="material-icons prefix">email</i>
-            <input v-model="credentials.email" type="text" class="autocomplete">
-            <label for="autocomplete-input">Email</label>
+            <input v-model="credentials.email" type="text" class="autocomplete" placeholder="Email">
           </div>
           <div class="input-field col s8 offset-s2">
             <i class="material-icons prefix">vpn_key</i>
-            <input v-model="credentials.password" type="password" class="autocomplete">
-            <label for="autocomplete-input">Password</label>
+            <input v-model="credentials.password" type="password" class="autocomplete" placeholder="Password">
           </div>
           <div class="input-field col s8 offset-s2">
             <i class="material-icons prefix">account_circle</i>
-            <input v-model="credentials.username" type="text" class="autocomplete">
-            <label for="autocomplete-input">Username</label>
-          </div>
+            <input v-model="credentials.username" type="text" class="autocomplete" placeholder="Your name">
+          </div>        
           <div class="input-field col s8 offset-s2">
             <i class="material-icons prefix">location_city</i>
-            <input v-model="credentials.city" type="text" class="autocomplete">
-            <label for="autocomplete-input">City and Country</label>
+            <input v-model="credentials.city" type="text" class="autocomplete" placeholder="Location">
           </div>
           <div class="input-field col s8 offset-s2">
             <label>
-              <input type="checkbox" />
-              <span>Willing to Trade Face to Face?</span>
+              <input v-model="credentials.tradeByPost" type="checkbox" />
+              <span>Willing to Trade Using Post?</span>
             </label>
           </div>
           <br>
           <div class="input-field col s8 offset-s2">
             <label>
-              <input type="checkbox" />
-              <span>Willing to Trade Using Post?</span>
+              <input v-model="credentials.tradeInPerson" type="checkbox" />
+              <span>Willing to Trade Face to Face?</span>
             </label>
           </div>
           <div class="row"></div>
           <br>
           <div class="input-field col s8 offset-s2">
-          <input type="submit" value="Submit">  
-            <a @click="submit()" class="waves-effect waves-light btn">button</a>
+            <input @click="submit" type="submit" value="Submit" class="waves-effect waves-light btn">  
           </div>
         </form>
       </div>
@@ -91,7 +61,12 @@
 </template>
 
 <script>
+  import Nav from './Nav';
+  import firebase from "firebase";
   export default {
+    components: {
+      Nav
+    },
     data() {
       return {
         errors: [],
@@ -99,28 +74,63 @@
           email: null,
           username: null,
           password: null,
-          city: ''
+          city: '',
+          tradeByPost: false,
+          tradeInPerson: false
         }
       }
     },
     methods: {
-      submit() {
+      submit(e) {
+        e.preventDefault()
+        console.log(e)
+        const username = this.credentials.username
+        const email = this.credentials.email
+        const password = this.credentials.password
+        const city = this.credentials.city
+        const tradeByPost = this.credentials.tradeByPost
+        const tradeInPerson = this.credentials.tradeInPerson
+        
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((user) => {
+
+          var userRef = firebase.database().ref("users");
+          userRef.push({ uid : user.user.uid,
+             username,
+             email,
+             city,
+             tradeByPost,
+             tradeInPerson });
+        }, (err) => {
+          console.log(err)
+          this.errors.push(err.message);
+        })    
+        .then((user) => {
+          firebase.auth().onAuthStateChanged(user => {
+            if(user) {
+              window.location = '/profile'
+            }
+          })
+        }
         let credentials = {
           email: this.credentials.email,
           password: this.credentials.password,
           username: this.credentials.username,
-          city: this.credentials.city
+          city: this.credentials.city,
+          tradeByPost: this.credentials.tradeByPost,
+          tradeInPerson: this.credentials.tradeInPerson
         }
+        //console.log(credentials)
       },
       checkForm: function (e) {
-          console.log('checking form');
+        console.log('checking form');
         if(this.credentials.email && this.credentials.password && this.credentials.username) return true;
         if (!this.credentials.email) this.errors.push("Email required.");
         if (!this.credentials.username) this.errors.push("User name required.");
         if (!this.credentials.password) {
           this.errors.push("Password required.");
         } else if (this.password.length < 6) {
-          this.errors.push('Passwort mussen bin 6 or more chars')
+          this.errors.push('Passwort mussen bin 6+ chars')
         }
         console.log(this.errors);
         e.preventDefault();
