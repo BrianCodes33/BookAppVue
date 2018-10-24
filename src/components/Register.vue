@@ -83,7 +83,7 @@
     methods: {
       submit(e) {
         e.preventDefault()
-        console.log(e)
+
         const username = this.credentials.username
         const email = this.credentials.email
         const password = this.credentials.password
@@ -112,6 +112,7 @@
             }
           })
         }
+
         let credentials = {
           email: this.credentials.email,
           password: this.credentials.password,
@@ -120,7 +121,10 @@
           tradeByPost: this.credentials.tradeByPost,
           tradeInPerson: this.credentials.tradeInPerson
         }
+
         //console.log(credentials)
+
+
       },
       checkForm: function (e) {
         console.log('checking form');
